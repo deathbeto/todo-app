@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>To-Do App (Frontend)</title>
+    <style>
+      :root {
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, Arial;
+      }
+      body {
+        max-width: 860px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      h1 {
+        margin: 0 0 1rem;
+      }
+      .card {
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-top: 0.5rem;
+      }
+      input[type="email"],
+      input[type="password"],
+      input[type="text"] {
+        width: 100%;
+        padding: 0.6rem;
+        border-radius: 8px;
+        border: 1px solid #bbb;
+      }
+      button {
+        padding: 0.6rem 1rem;
+        border: 1px solid #333;
+        border-radius: 10px;
+        background: #111;
+        color: #fff;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: #fff;
+        color: #111;
+      }
+      .muted {
+        color: #666;
+        font-size: 0.9rem;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.6rem 0.4rem;
+        border-bottom: 1px dashed #ddd;
+      }
+      .task-title.done {
+        text-decoration: line-through;
+        opacity: 0.6;
+      }
+      .stack {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .footer {
+        margin-top: 2rem;
+        color: #666;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>To-Do App</h1>
+    <p class="muted">
+      App con registro, login y tareas con backend Node (auth/tasks) y MongoDB.
+    </p>
+
+    <div class="row">
+      <div class="card">
+        <h3>Registro</h3>
+        <label>Email</label>
+        <input id="regEmail" type="email" placeholder="tu@correo.com" />
+        <label>Password</label>
+        <input id="regPass" type="password" placeholder="mínimo 8 caracteres" />
+        <div class="row">
+          <button id="btnRegister">Crear cuenta</button>
+          <button id="btnQuickAccount" class="secondary">
+            Cuenta de prueba
+          </button>
+        </div>
+        <div id="regMsg" class="muted"></div>
+      </div>
+
+      <div class="card">
+        <h3>Login</h3>
+        <label>Email</label>
+        <input id="logEmail" type="email" placeholder="tu@correo.com" />
+        <label>Password</label>
+        <input id="logPass" type="password" placeholder="********" />
+        <div class="row">
+          <button id="btnLogin">Entrar</button>
+          <button id="btnLogout" class="secondary">Salir</button>
+        </div>
+        <div id="loginMsg" class="muted"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Tareas</h3>
+      <div class="row">
+        <input id="newTask" type="text" placeholder="Nueva tarea..." />
+        <button id="btnAddTask">Agregar</button>
+      </div>
+      <ul id="taskList"></ul>
+      <div id="tasksMsg" class="muted"></div>
+    </div>
+
+    <div class="footer">App creada por Alberto Rebolledo.</div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  auth-service:
+    build: ./auth-service
+    environment:
+      - PORT=3001
+      - MONGODB_URI=mongodb://mongo:27017/authdb
+      - ACCESS_TOKEN_SECRET=dev_access_secret
+      - REFRESH_TOKEN_SECRET=dev_refresh_secret
+      - NODE_ENV=development
+    depends_on:
+      - mongo
+    ports:
+      - "3001:3001"
+
+  tasks-service:
+    build: ./tasks-service
+    environment:
+      - PORT=3002
+      - MONGODB_URI=mongodb://mongo:27017/tasksdb
+      - ACCESS_TOKEN_SECRET=dev_access_secret
+      - NODE_ENV=development
+      - AUTH_ISSUER=todo-app-auth
+    depends_on:
+      - mongo
+      - auth-service
+    ports:
+      - "3002:3002"
+
+volumes:
+  mongo_data:
