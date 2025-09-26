@@ -37,10 +37,10 @@ mongoose
   .then(() => console.log("tasks-service: Mongo conectado"))
   .catch((err) => console.error("tasks-service: Mongo error:", err));
 
-// Export para tests
-export { app };
+// 👇 Export default para Supertest
+export default app;
 
-// Arrancar servidor
+// Arrancar servidor SOLO si no es test
 if (process.env.NODE_ENV !== "test") {
   const PORT = process.env.PORT || 3002;
   app.listen(PORT, () => console.log(`tasks-service escuchando en :${PORT}`));
