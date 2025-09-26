@@ -1,31 +1,47 @@
-import 'dotenv/config';
-import express from 'express';
-import helmet from 'helmet';
-import cors from 'cors';
-import morgan from 'morgan';
-import rateLimit from 'express-rate-limit';
-import mongoose from 'mongoose';
-import routes from './routes.js';
+import "dotenv/config";
+import express from "express";
+import helmet from "helmet";
+import cors from "cors";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
+import xss from "xss-clean";
+import mongoSanitize from "express-mongo-sanitize";
+import mongoose from "mongoose";
+import routes from "./routes.js";
 
 const app = express();
 
+// Seguridad y utilidades
 app.use(helmet());
-app.use(cors());
+app.use(xss());
+app.use(mongoSanitize());
+app.use(cors({ origin: "*" }));
+app.use(morgan("dev"));
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+  })
+);
 
-// Rate limit para /login y /register
-const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20 });
-app.use('/api/auth', authLimiter);
+// Healthcheck
+app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
-app.use('/api', routes);
+// Rutas propias
+app.use("/api", routes);
 
-const { PORT = 3001, MONGODB_URI } = process.env;
+// DB
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("auth-service: Mongo conectado"))
+  .catch((err) => console.error("auth-service: Mongo error:", err));
 
-mongoose.connect(MONGODB_URI).then(() => {
-  console.log('Auth MongoDB conectado');
-  app.listen(PORT, () => console.log(`Auth-Service en http://localhost:${PORT}`));
-}).catch(err => {
-  console.error('Error conectando a MongoDB:', err.message);
-  process.exit(1);
-});
+// Export para tests
+export { app };
+
+// Arrancar servidor
+if (process.env.NODE_ENV !== "test") {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => console.log(`auth-service escuchando en :${PORT}`));
+}
